@@ -1,6 +1,7 @@
 let lastData = null;
 
 export default function handler(req, res) {
+  // HEADER SESUAI DOKUMENTASI SIBAGI
   const tokenHeader = req.headers["sibagi-streamboost-callback-token"];
   const validToken = process.env.sibagi_key;
 
