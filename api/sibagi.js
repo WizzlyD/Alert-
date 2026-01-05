@@ -1,14 +1,21 @@
-let lastEvent = null;
+let lastData = null;
 
-export default async function handler(req, res) {
+export default function handler(req, res) {
+  const token = req.headers["sibagi-streamboost-callback-token"];
+  const VALID_TOKEN = "1vjrdJ7sBlGUKJGMLc2Ouphm";
+
+  if (token !== VALID_TOKEN) {
+    return res.status(401).json({ error: "Invalid token" });
+  }
+
   if (req.method === "POST") {
-    lastEvent = req.body;
+    lastData = req.body;
     return res.status(200).json({ success: true });
   }
 
   if (req.method === "GET") {
-    return res.status(200).json(lastEvent || {});
+    return res.status(200).json(lastData || {});
   }
 
-  return res.status(405).end();
+  res.status(405).end();
 }
