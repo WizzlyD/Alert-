@@ -2,7 +2,7 @@ let lastData = null;
 
 export default function handler(req, res) {
   const token = req.headers["sibagi-streamboost-callback-token"];
-  const VALID_TOKEN = "1vjrdJ7sBlGUKJGMLc2Ouphm";
+  const VALID_TOKEN = "zrHPHrpTRNT1OKCZPOEr51Op";
 
   if (token !== VALID_TOKEN) {
     return res.status(401).json({ error: "Invalid token" });
