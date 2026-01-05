@@ -1,41 +1,27 @@
-const alertBox = document.querySelector(".alert-container");
-const alertText = document.getElementById("alert-text");
+let lastId = null;
 
-const ALERT_DURATION = 5000;
+async function checkAlert() {
+  try {
+    const res = await fetch("/api/sibagi");
+    const data = await res.json();
 
-// sembunyikan saat load
-alertBox.style.display = "none";
+    if (!data || !data.id || data.id === lastId) return;
 
-// tangkap webhook
-window.addEventListener("message", (event) => {
-  const data = event.data;
-  if (!data) return;
-
-  // === SAWERIA DONATION ===
-  if (data.type === "donation") {
-    showAlert(
-      `${data.donator || "Someone"} donated Rp${formatRupiah(data.amount || 0)}`
-    );
+    lastId = data.id;
+    showAlert(`${data.donatorName} donate Rp${data.amount}`);
+  } catch (e) {
+    console.log("Error polling API:", e);
   }
-
-  // === TEST MANUAL ===
-  if (data.test === true) {
-    showAlert("TEST ALERT Rp10.000");
-  }
-});
+}
 
 function showAlert(text) {
-  alertText.innerText = text;
+  const alertBox = document.querySelector(".alert-container");
+  const alertText = document.getElementById("alert-text");
 
-  alertBox.style.display = "flex";
+  alertText.innerText = text;
   alertBox.classList.add("show");
 
-  setTimeout(() => {
-    alertBox.classList.remove("show");
-    alertBox.style.display = "none";
-  }, ALERT_DURATION);
+  setTimeout(() => alertBox.classList.remove("show"), 5000);
 }
 
-function formatRupiah(num) {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
+setInterval(checkAlert, 2000);
